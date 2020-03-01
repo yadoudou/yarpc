@@ -1,0 +1,20 @@
+{
+  "name": "@yadou/yarpc",
+  "version": "1.0.1",
+  "description": "A rpc client for yar(a php rpc extenstion) ",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./dist/data.js",
+    "build": "tsc"
+  },
+  "keywords": [
+    "yar",
+    "yarpc"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^13.7.6",
+    "locutus": "^2.0.11"
+  }
+}
