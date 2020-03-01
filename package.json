@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^13.7.6",
+    "@yadou/yalog": "^1.0.2",
     "locutus": "^2.0.11"
   }
 }

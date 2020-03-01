@@ -1,5 +1,6 @@
 import unserialize = require('locutus/php/var/unserialize');
 import http = require('http');
+import Log from '@yadou/yalog';
 import { YarPacket } from './YarPacket';
 
 interface YarClientConf {
@@ -51,17 +52,17 @@ class YarClient {
             let startTime = Date.now();
             const req = http.request( options, ( res ) => {
                 let intUseTime = Date.now() - startTime;
-                console.log('request respone', { statusCode: res.statusCode, useTime: intUseTime } );
+                Log.info('request respone', { statusCode: res.statusCode, useTime: intUseTime } );
                 res.on('data', (chunk) => {
                     let packet = YarPacket.parse( chunk );
                     let returnInfo = unserialize( packet.body );
                     if ( returnInfo.s !== 0 ) {
-                        console.log('rpc return failed', {status: returnInfo.s, message: returnInfo.e, output: returnInfo.o });
+                        Log.warning('rpc return failed', {status: returnInfo.s, message: returnInfo.e, output: returnInfo.o });
                         reject('call rpc failed');
                         return true;
                     }
                     if ( returnInfo.o.length > 0 ) {
-                        console.log('rpc return has output', { output: returnInfo.o } );
+                        Log.warning('rpc return has output', { output: returnInfo.o } );
                     }
                     resolve( returnInfo.r );
                 } )
@@ -69,7 +70,7 @@ class YarClient {
 
             // on error
             req.on('error', ( e ) => {
-                console.log('request failed', { errMessage: e.message } );
+                Log.warning('request failed', { errMessage: e.message } );
                 reject( e );
             } )
 
@@ -77,7 +78,7 @@ class YarClient {
             let buffer = Buffer.from(packetBits.buffer);
             req.write(buffer);
             req.end( () => {
-                console.log('send rpc request', {url: this.urlObject.href });
+                Log.trace('send rpc request', {url: this.urlObject.href });
             } );
         } )
     }
