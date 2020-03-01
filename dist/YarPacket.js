@@ -1,6 +1,8 @@
-var serialize = require('locutus/php/var/serialize');
+"use strict";
+exports.__esModule = true;
+var serialize = require("locutus/php/var/serialize");
 ;
-var YarPacket = (function () {
+var YarPacket = /** @class */ (function () {
     function YarPacket() {
     }
     YarPacket.parse = function (bits) {
@@ -96,7 +98,7 @@ var YarPacket = (function () {
     YarPacket.headerBit = 82;
     YarPacket.nameBit = 8;
     return YarPacket;
-})();
+}());
 exports.YarPacket = YarPacket;
 function _repeat(str, num) {
     while (num > 1) {

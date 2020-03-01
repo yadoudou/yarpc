@@ -1,7 +1,21 @@
-var unserialize = require('locutus/php/var/unserialize');
-var http = require('http');
-var YarPacket_1 = require('./YarPacket');
-var YarClient = (function () {
+"use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+exports.__esModule = true;
+var unserialize = require("locutus/php/var/unserialize");
+var http = require("http");
+var yalog_1 = require("@yadou/yalog");
+var YarPacket_1 = require("./YarPacket");
+var YarClient = /** @class */ (function () {
     function YarClient(conf) {
         this.conf = {
             apiUrl: null,
@@ -9,7 +23,7 @@ var YarClient = (function () {
             timeOutMs: 10000
         };
         this.urlObject = null;
-        this.conf = { this: .conf, conf: conf };
+        this.conf = __assign(__assign({}, this.conf), conf);
         try {
             this.urlObject = new URL(this.conf.apiUrl);
         }
@@ -44,34 +58,34 @@ var YarClient = (function () {
             var startTime = Date.now();
             var req = http.request(options, function (res) {
                 var intUseTime = Date.now() - startTime;
-                console.log('request respone', { statusCode: res.statusCode, useTime: intUseTime });
+                yalog_1["default"].info('request respone', { statusCode: res.statusCode, useTime: intUseTime });
                 res.on('data', function (chunk) {
                     var packet = YarPacket_1.YarPacket.parse(chunk);
                     var returnInfo = unserialize(packet.body);
                     if (returnInfo.s !== 0) {
-                        console.log('rpc return failed', { status: returnInfo.s, message: returnInfo.e, output: returnInfo.o });
+                        yalog_1["default"].warning('rpc return failed', { status: returnInfo.s, message: returnInfo.e, output: returnInfo.o });
                         reject('call rpc failed');
                         return true;
                     }
                     if (returnInfo.o.length > 0) {
-                        console.log('rpc return has output', { output: returnInfo.o });
+                        yalog_1["default"].warning('rpc return has output', { output: returnInfo.o });
                     }
                     resolve(returnInfo.r);
                 });
             });
             // on error
             req.on('error', function (e) {
-                console.log('request failed', { errMessage: e.message });
+                yalog_1["default"].warning('request failed', { errMessage: e.message });
                 reject(e);
             });
             //send buffer
             var buffer = Buffer.from(packetBits.buffer);
             req.write(buffer);
             req.end(function () {
-                console.log('send rpc request', { url: _this.urlObject.href });
+                yalog_1["default"].trace('send rpc request', { url: _this.urlObject.href });
             });
         });
     };
     return YarClient;
-})();
+}());
 exports.YarClient = YarClient;
