@@ -90,6 +90,36 @@ class YarPacket {
         return dataView;
     }
 
+    static buildResponsePack( transId, status, returnValue, outPut = '' , errorMessage = '' ) : YarPacketStruct{
+        let body = {
+            i: transId,
+            s: status,
+            r: returnValue,
+            o: outPut,
+            e: errorMessage
+        };
+        let bodyStr = serialize( body );
+        let bodyLen = bodyStr.length;
+        let packagerName = 'PHP\u0000YAR_';
+        bodyLen += packagerName.length;
+        let provider = 'PHP Yar Server';
+        provider += '\u0000'.repeat( 32 - provider.length );
+        let packet = {
+            header: {
+                id: transId,
+                version: 0,
+                magic_num: 2162158688,
+                reserved: 0,
+                provider: provider,
+                token: '\u0000'.repeat( 32 ),
+                body_len: bodyLen
+            },
+            packager_name: packagerName,
+            body: bodyStr
+        };
+        return packet;
+    }
+
     static buildRequestPack (methodName, params ) : YarPacketStruct {
         // transaction id
         let transId = parseInt( `${Math.random()}`.substr(2, 10) ) >>> 0;

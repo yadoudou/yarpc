@@ -47,6 +47,37 @@ var YarPacket = /** @class */ (function () {
         _buildBit(packet.body, ['string', packet.body.length - 8], dataView, offset);
         return dataView;
     };
+    YarPacket.buildResponsePack = function (transId, status, returnValue, outPut, errorMessage) {
+        if (outPut === void 0) { outPut = ''; }
+        if (errorMessage === void 0) { errorMessage = ''; }
+        var body = {
+            i: transId,
+            s: status,
+            r: returnValue,
+            o: outPut,
+            e: errorMessage
+        };
+        var bodyStr = serialize(body);
+        var bodyLen = bodyStr.length;
+        var packagerName = 'PHP\u0000YAR_';
+        bodyLen += packagerName.length;
+        var provider = 'PHP Yar Server';
+        provider += '\u0000'.repeat(32 - provider.length);
+        var packet = {
+            header: {
+                id: transId,
+                version: 0,
+                magic_num: 2162158688,
+                reserved: 0,
+                provider: provider,
+                token: '\u0000'.repeat(32),
+                body_len: bodyLen
+            },
+            packager_name: packagerName,
+            body: bodyStr
+        };
+        return packet;
+    };
     YarPacket.buildRequestPack = function (methodName, params) {
         // transaction id
         var transId = parseInt(("" + Math.random()).substr(2, 10)) >>> 0;

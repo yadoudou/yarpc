@@ -4,7 +4,7 @@ A rpc client for yar(a php rpc extenstion)
 
 ## Install
 ```bash
-npm install -D @yadou/yalog
+npm install -D @yadou/yarpc
 ```
 
 ## The Yar Protocal
@@ -29,15 +29,18 @@ let yarPacket = {
 */
 ```
 
-## Sample code
-```javascript
-import { YarClient } from '@yadou/yarpc';
+## Test code
+1、
+open a bash window and start the server test
+```bash
+node ./test/server.test.js
+```
 
-let apiUrl = 'http://localhost/rpc/apiurl'; // The Rpc Server api url
-let yarClient = new YarClient({ apiUrl: apiUrl });
-let params = [ 'params1', 'params2', 'params3' ];
-let data = yarClient.call( 'methodName', params )
-console.log(data);
+2、
+open another bash window and execute the client test
+
+```
+node ./test/client.test.js
 ```
 
 

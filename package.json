@@ -1,6 +1,6 @@
 {
   "name": "@yadou/yarpc",
-  "version": "1.0.2",
+  "version": "1.0.61",
   "description": "A rpc client for yar(a php rpc extenstion) ",
   "main": "./dist/index.js",
   "scripts": {
